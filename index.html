@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇幻靈魂的低語</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        body { font-family: 'Noto Serif TC', serif; background-color: #f4f1ea; }
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 text-stone-800">
+
+    <div id="app" class="max-w-md w-full">
+        <transition name="fade" mode="out-in">
+            <div :key="currentNodeId" class="space-y-8">
+                
+                <div class="text-center">
+                    <p class="text-lg leading-relaxed italic text-stone-600 mb-2">—— 旅途中的片段 ——</p>
+                    <h1 class="text-2xl font-bold leading-snug">
+                        {{ currentNode.text }}
+                    </h1>
+                </div>
+
+                <div v-if="currentNode.options" class="space-y-4">
+                    <button 
+                        v-for="opt in currentNode.options" 
+                        @click="nextNode(opt.target_id)"
+                        class="w-full py-4 px-6 rounded-xl border border-stone-300 bg-white/50 hover:bg-stone-200 transition-all duration-300 shadow-sm active:scale-95"
+                    >
+                        {{ opt.text }}
+                    </button>
+                </div>
+
+                <div v-else class="bg-white/80 p-8 rounded-3xl shadow-xl border border-stone-200 text-center animate-in fade-in duration-1000">
+                    <p class="text-stone-400 mb-2">最終的化身</p>
+                    <h2 class="text-3xl font-bold text-stone-900 mb-6">【 {{ currentNode.result_title }} 】</h2>
+                    <p class="text-lg leading-relaxed text-stone-700">
+                        {{ currentNode.result_description }}
+                    </p>
+                    <button @click="reset" class="mt-10 text-stone-400 text-sm underline tracking-widest">
+                        重新啟程
+                    </button>
+                </div>
+
+            </div>
+        </transition>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const currentNodeId = ref('start');
+                
+                // 這裡就是你原本的樹狀圖邏輯
+                const quizData = {
+                    // --- 根節點 ---
+                    'start': {
+                        text: "當你從漫長的夢境中醒來，抬頭看向天空，你看到的是？",
+                        options: [
+                            { text: "清冷的月亮 🌙", target_id: "moon_path" },
+                            { text: "溫暖的太陽 ☀️", target_id: "sun_path" }
+                        ]
+                    },
+
+                    // --- 月亮分支 (Moon Path) ---
+                    'moon_path': {
+                        text: "在銀色的月色下，你漫步在...",
+                        options: [
+                            { text: "寂靜的城市街道", target_id: "moon_city" },
+                            { text: "荒野的大自然", target_id: "moon_nature" }
+                        ]
+                    },
+                    'moon_city': {
+                        text: "巷弄盡頭有一場神祕宴會，你會參加嗎？",
+                        options: [
+                            { text: "不參加，選擇與自己對話", target_id: "moon_city_no_banquet" },
+                            { text: "參加，推開神祕的大門", target_id: "moon_city_banquet" }
+                        ]
+                    },
+                    'moon_city_no_banquet': {
+                        text: "你下意識伸出右手，你的手掌是...",
+                        options: [
+                            { text: "朝上，期待一份恩賜", target_id: "res_tree_hole" },
+                            { text: "朝下，給予一份力量", target_id: "res_candy_maker" }
+                        ]
+                    },
+                    'moon_city_banquet': {
+                        text: "你在桌上看見兩樣東西，你的目光落在...",
+                        options: [
+                            { text: "一杯倒映著星光的美酒", target_id: "res_drunkard" },
+                            { text: "一副神祕的銀色面具", target_id: "res_jester" }
+                        ]
+                    },
+                    'moon_nature': {
+                        text: "湖面泛起漣漪，你發現湖裡有怪魚...",
+                        options: [
+                            { text: "嘗試捕捉，揭開神祕", target_id: "moon_nature_catch" },
+                            { text: "無視魚，望向遠方的山嵐", target_id: "moon_nature_ignore" }
+                        ]
+                    },
+                    'moon_nature_catch': {
+                        text: "你手中憑空出現了一件器物，那是...",
+                        options: [
+                            { text: "一柄沈重的長劍", target_id: "res_hero" },
+                            { text: "一支發光的魔法棒", target_id: "res_mage" }
+                        ]
+                    },
+                    'moon_nature_ignore': {
+                        text: "遠遠瞧見一隻巨大的白熊，你覺得...",
+                        options: [
+                            { text: "牠正朝著你走過來，尋求某種聯繫", target_id: "res_woodcutter" },
+                            { text: "牠正慢慢遠離你，回歸牠的孤獨", target_id: "res_bird" }
+                        ]
+                    },
+
+                    // --- 太陽分支 (Sun Path) ---
+                    'sun_path': {
+                        text: "在和煦的陽光下，你打算前往...",
+                        options: [
+                            { text: "繁忙的城市中心", target_id: "sun_city" },
+                            { text: "遼闊的大自然", target_id: "sun_nature" }
+                        ]
+                    },
+                    'sun_city': {
+                        text: "城裡正舉辦慶典，你打算參與嗎？",
+                        options: [
+                            { text: "不參與，在寧靜的小徑穿梭", target_id: "sun_city_no_banquet" },
+                            { text: "參與，融入歡樂的人群", target_id: "sun_city_banquet" }
+                        ]
+                    },
+                    'sun_city_no_banquet': {
+                        text: "路邊有個來路不明的甜甜圈，你會...",
+                        options: [
+                            { text: "把它吃掉，享受意外的饋贈", target_id: "res_wolf" },
+                            { text: "不吃，帶著謹慎繼續前行", target_id: "res_villager" }
+                        ]
+                    },
+                    'sun_city_banquet': {
+                        text: "你為自己挑選了一件飾品，那是...",
+                        options: [
+                            { text: "代表契約的戒指", target_id: "res_godmother" },
+                            { text: "代表典雅的項鍊", target_id: "res_princess" }
+                        ]
+                    },
+                    'sun_nature': {
+                        text: "你來到一片翠綠的草皮，你會...",
+                        options: [
+                            { text: "躺下仰望悠閒的白雲", target_id: "sun_nature_lie" },
+                            { text: "興奮地在草地上滾一圈", target_id: "sun_nature_roll" }
+                        ]
+                    },
+                    'sun_nature_lie': {
+                        text: "在附近的草叢中，你發現了...",
+                        options: [
+                            { text: "亮亮的山中花卉", target_id: "res_flower_fairy" },
+                            { text: "散發幽香的藥材", target_id: "res_witch" }
+                        ]
+                    },
+                    'sun_nature_roll': {
+                        text: "起身後，你的下一個動作是...",
+                        options: [
+                            { text: "溫柔地扶起倒地的草", target_id: "res_north_wind" },
+                            { text: "在大地之上快樂地跳起舞", target_id: "res_gnome" }
+                        ]
+                    },
+
+                    // --- 結局節點 (Results) ---
+                    'res_tree_hole': { result_title: "樹洞", result_description: "你是深林中的避風港，靜靜地收藏著旅人們無處安放的祕密。在你的懷抱裡，疲憊的靈魂總能找到安寧。" },
+                    'res_candy_maker': { result_title: "糖果製造商", result_description: "你習慣用手心的溫度，將生活裡的苦澀揉成甜美的補給。你相信，一點點善意就能點亮整座森林。" },
+                    'res_drunkard': { result_title: "酒鬼", result_description: "你在星光下追逐破碎的夢境，不願被俗世束縛。你的靈魂帶著微醺的詩意，在現實與幻境的邊緣優雅漫步。" },
+                    'res_jester': { result_title: "丑角", result_description: "你是用笑聲點亮黑夜的人。你的幽默是一種深刻的慈悲，掩蓋了對世界最深沉的觀察與愛。" },
+                    'res_hero': { result_title: "勇者", result_description: "雖然內心也會顫抖，但你依然選擇握緊劍柄。你的勇氣並非無所畏懼，而是為了守護重要的事物，決定挺身而出。" },
+                    'res_mage': { result_title: "魔法師", result_description: "你是繁星下的隱者，在萬物的律動中尋找真理。對你而言，智慧是最高級的魔法，能看透所有迷霧。" },
+                    'res_woodcutter': { result_title: "樵夫", result_description: "你像大山一樣穩重且知足。即便遇見強大而未知的存在，也能平靜地與之共處，守護著自己的一方平靜。" },
+                    'res_bird': { result_title: "路過飛鳥", result_description: "你是屬於天空的自由靈魂。你路過這片世界，不帶走什麼，只留下一個輕盈且孤傲的剪影。" },
+                    'res_wolf': { result_title: "大野狼", result_description: "你擁抱內心的荒野本能，活得真實而純粹。你不畏懼世俗的目光，只追隨直覺的引導，去尋找靈魂的渴求。" },
+                    'res_villager': { result_title: "村民", result_description: "你懂得在平凡的柴米油鹽中發現奇蹟。你的善良與知足，是這部童話故事裡最溫暖、也最真實的底色。" },
+                    'res_godmother': { result_title: "神仙教母", result_description: "你是指引迷途者的微光。你總在不經意間灑下希望的種子，用你的溫柔讓乾枯的心重新開出花朵。" },
+                    'res_princess': { result_title: "公主", result_description: "你擁有一顆高貴且堅韌的心。無論身處喧囂或荒野，你都能保持內在的秩序，優雅地行走在自己的道路上。" },
+                    'res_flower_fairy': { result_title: "花花仙子", result_description: "只要有你在的地方，連荒原都能開出繁花。你用純真與靈動妝點著世界，讓每個相遇都充滿生機。" },
+                    'res_witch': { result_title: "森林女巫", result_description: "你在寂靜的草木香氣中提煉療癒的力量。雖然離群索居，卻是生命循環中不可或缺的神祕守護者。" },
+                    'res_north_wind': { result_title: "北風", result_description: "你是穿過冰霜卻不失溫度的風。你在力量中藏著極致的細膩，在平息騷動後，總會溫柔地扶平受傷的草地。" },
+                    'res_gnome': { result_title: "地精", result_description: "你是土地的赤子，在大地的脈動中快樂起舞。你簡單而純粹的生命力，能喚醒最沈睡的荒野。" }
+                };
+
+                const currentNode = computed(() => quizData[currentNodeId.value] || quizData['start']);
+
+                const nextNode = (id) => { currentNodeId.value = id; };
+                const reset = () => { currentNodeId.value = 'start'; };
+
+                return { currentNodeId, currentNode, nextNode, reset };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
