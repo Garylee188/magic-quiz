@@ -13,8 +13,29 @@
         .fade-enter-from, .fade-leave-to { opacity: 0; }
         /* 自定義極小字體 */
         .text-tiny { font-size: 12px; }
-        button {
-            -webkit-tap-highlight-color: transparent; /* 禁用点击高亮 */
+        /*
+         禁用手機瀏覽器（尤其是 iOS Safari）在觸摸互動時的灰色高亮/覆蓋。
+         -webkit-tap-highlight-color: 移除 tap 高亮。
+         appearance / -webkit-appearance: 移除系統預設外觀。
+         touch-action: manipulation：避免雙擊/長按導致意外行為。
+         覆寫 :active 背景為透明以避免 iOS 在 active 時加上的灰色遮罩。
+        */
+        button, a, input, textarea, select, label {
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-appearance: none;
+            appearance: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            outline: none;
+        }
+
+        /* 覆寫 active 狀態的背景顏色（加上 !important 確保跑過 utility class） */
+        button:active, a:active, input:active, textarea:active {
+            background-color: transparent !important;
+            background-image: none !important;
+            color: inherit !important;
         }
     </style>
 </head>
