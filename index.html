@@ -8,7 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
-        body { font-family: 'Noto Serif TC', serif; background-color: #f4f1ea; }
+        body { font-family: 'Noto Serif TC', serif; background-color: #fbfbf9; } 
+        /* #fbfbf9 f4f1ea*/
         .fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
         .fade-enter-from, .fade-leave-to { opacity: 0; }
         /* 自定義極小字體 */
@@ -72,11 +73,11 @@
                         <p class="text-lg leading-relaxed text-stone-700">
                             {{ currentNode.result_description }}
                         </p>
-                        <!-- 新增圖片顯示邏輯 -->
-                        <img 
-                            v-if="currentNodeId === 'res_drunkard'" 
-                            src="角色圖片/酒鬼2.jpeg" 
-                            alt="酒鬼角色圖片" 
+                        <!-- 通用圖片顯示：如果當前節點有 image 屬性則顯示對應圖片 -->
+                        <img
+                            v-if="currentNode.image"
+                            :src="currentNode.image"
+                            :alt="(currentNode.result_title || '角色') + ' 角色圖片'"
                             class="mx-auto w-[90%] h-auto object-contain"
                         >
                         <button @click="reset" class="mt-10 text-stone-400 text-sm underline tracking-widest">
@@ -208,22 +209,22 @@
                             { text: "快樂地跳起了舞", target_id: "res_gnome" }
                         ]
                     },
-                    'res_tree_hole': { result_title: "樹洞精靈", result_description: "你是深林中的避風港，靜靜地收藏著人們無處安放的祕密。在你的懷抱裡，疲憊的靈魂總能找到安寧。" },
-                    'res_candy_maker': { result_title: "糖果製造商", result_description: "你習慣用自己的雙手，將生活裡的苦澀揉成甜美的糖。你相信，一點點甜蜜就能點亮整座城市。" },
-                    'res_drunkard': { result_title: "酒鬼", result_description: "你在星光下追逐夢境，不願被世俗束縛。你的靈魂帶著微醺的詩意，在現實與幻境的邊緣優雅漫步。" },
-                    'res_jester': { result_title: "丑角", result_description: "你是用笑聲溫暖黑夜的人。你的幽默是一種深刻的溫柔，掩蓋了對世界最深沉的觀察與愛。" },
-                    'res_hero': { result_title: "勇者", result_description: "雖然內心也會顫抖，但你依然選擇握緊劍柄。你的勇氣並非無所畏懼，而是為了守護重要的事物，挺身而出。" },
-                    'res_mage': { result_title: "魔法師", result_description: "你在萬物的律動中尋找真理。對你而言，智慧是最高級的魔法，能看透所有迷霧。" },
-                    'res_woodcutter': { result_title: "樵夫", result_description: "你像山一樣穩重且知足。即便事情找上門，也能平靜地與之共處，守護著自己的一方平靜。" },
-                    'res_bird': { result_title: "飛鳥", result_description: "你是屬於天空的自由靈魂。愛追著有趣的事湊一腳，看看熱鬧又盡興而返，自在無拘。" },
-                    'res_wolf': { result_title: "大野狼", result_description: "你擁抱內心的荒野本能，活得真實而純粹，追隨直覺引導的你有時容易被人誤會，但自己的快樂才是真的。" },
-                    'res_villager': { result_title: "村民", result_description: "你懂得在平凡的柴米油鹽中發現樂趣。你的善良與知足，是童話故事裡最溫暖、也最真實的底色。" },
-                    'res_godmother': { result_title: "神仙教母", result_description: "你是指引迷途者的微光。備受周遭信任的你，總是能用閃亮的仙粉襯托出最美麗的花。" },
-                    'res_princess': { result_title: "公主", result_description: "你擁有一顆高貴且堅韌的心。富足的你總是優雅地行走在自己的道路上。" },
-                    'res_flower_fairy': { result_title: "花仙子", result_description: "只要有你在的地方，連荒原都能開出繁花。你用純真與妙趣妝點世界，讓每個相遇都充滿生機。" },
-                    'res_witch': { result_title: "森林女巫", result_description: "你在寂靜中提煉療癒的力量。雖然離群索居，卻是生命循環中不可或缺的神祕守護者。" },
-                    'res_north_wind': { result_title: "北風", result_description: "你是穿過冰霜的風，默默的看著世間。你在力量中藏著極致的細膩，在平息騷動後，總會溫柔地撫平受傷的草地。" },
-                    'res_gnome': { result_title: "地精", result_description: "你是土地的玩伴，在大地的脈動中快樂起舞。古靈精怪的你，總是能與世界的簡單純粹共鳴。" }
+                    'res_tree_hole': { result_title: "樹洞精靈", result_description: "你是深林中的避風港，靜靜地收藏著人們無處安放的祕密。在你的懷抱裡，疲憊的靈魂總能找到安寧。", image: "角色圖片/樹洞精靈.jpeg" },
+                    'res_candy_maker': { result_title: "糖果製造商", result_description: "你習慣用自己的雙手，將生活裡的苦澀揉成甜美的糖。你相信，一點點甜蜜就能點亮整座城市。", image: "角色圖片/糖果製造商.jpeg" },
+                    'res_drunkard': { result_title: "酒鬼", result_description: "你在星光下追逐夢境，不願被世俗束縛。你的靈魂帶著微醺的詩意，在現實與幻境的邊緣優雅漫步。", image: "角色圖片/酒鬼.jpeg" },
+                    'res_jester': { result_title: "丑角", result_description: "你是用笑聲溫暖黑夜的人。你的幽默是一種深刻的溫柔，掩蓋了對世界最深沉的觀察與愛。", image: "角色圖片/丑角.jpeg" },
+                    'res_hero': { result_title: "勇者", result_description: "雖然內心也會顫抖，但你依然選擇握緊劍柄。你的勇氣並非無所畏懼，而是為了守護重要的事物，挺身而出。", image: "角色圖片/勇者.jpeg" },
+                    'res_mage': { result_title: "魔法師", result_description: "你在萬物的律動中尋找真理。對你而言，智慧是最高級的魔法，能看透所有迷霧。", image: "角色圖片/魔法師.jpeg" },
+                    'res_woodcutter': { result_title: "樵夫", result_description: "你像山一樣穩重且知足。即便事情找上門，也能平靜地與之共處，守護著自己的一方平靜。", image: "角色圖片/樵夫.jpeg" },
+                    'res_bird': { result_title: "飛鳥", result_description: "你是屬於天空的自由靈魂。愛追著有趣的事湊一腳，看看熱鬧又盡興而返，自在無拘。", image: "角色圖片/飛鳥.jpeg" },
+                    'res_wolf': { result_title: "大野狼", result_description: "你擁抱內心的荒野本能，活得真實而純粹，追隨直覺引導的你有時容易被人誤會，但自己的快樂才是真的。", image: "角色圖片/大野狼.jpeg" },
+                    'res_villager': { result_title: "村民", result_description: "你懂得在平凡的柴米油鹽中發現樂趣。你的善良與知足，是童話故事裡最溫暖、也最真實的底色。", image: "角色圖片/村民.jpeg" },
+                    'res_godmother': { result_title: "神仙教母", result_description: "你是指引迷途者的微光。備受周遭信任的你，總是能用閃亮的仙粉襯托出最美麗的花。", image: "角色圖片/神仙教母.jpeg" },
+                    'res_princess': { result_title: "公主", result_description: "你擁有一顆高貴且堅韌的心。富足的你總是優雅地行走在自己的道路上。", image: "角色圖片/公主.jpeg" },
+                    'res_flower_fairy': { result_title: "花仙子", result_description: "只要有你在的地方，連荒原都能開出繁花。你用純真與妙趣妝點世界，讓每個相遇都充滿生機。", image: "角色圖片/花仙子.jpeg" },
+                    'res_witch': { result_title: "森林女巫", result_description: "你在寂靜中提煉療癒的力量。雖然離群索居，卻是生命循環中不可或缺的神祕守護者。", image: "角色圖片/森林女巫.jpeg" },
+                    'res_north_wind': { result_title: "北風", result_description: "你是穿過冰霜的風，默默的看著世間。你在力量中藏著極致的細膩，在平息騷動後，總會溫柔地撫平受傷的草地。", image: "角色圖片/北風.jpeg" },
+                    'res_gnome': { result_title: "地精", result_description: "你是土地的玩伴，在大地的脈動中快樂起舞。古靈精怪的你，總是能與世界的簡單純粹共鳴。", image: "角色圖片/地精.jpeg" }
                 };
 
                 const currentNode = computed(() => quizData[currentNodeId.value] || quizData['start']);
